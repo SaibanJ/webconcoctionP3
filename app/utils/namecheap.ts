@@ -1,23 +1,39 @@
-import axios from 'axios';
-import { parseString } from 'xml2js';
-import { promisify } from 'util';
+import axios from "axios"
+import { parseString } from "xml2js"
+import { promisify } from "util"
 
 // Convert parseString to Promise-based function
-const parseStringPromise = promisify(parseString);
+const parseStringPromise = promisify(parseString)
 
 // Namecheap API configuration
-const apiUser = process.env.NAMECHEAP_USERNAME;
-const apiKey = process.env.NAMECHEAP_API_KEY;
-const clientIp = process.env.NAMECHEAP_CLIENT_IP;
-const userName = process.env.NAMECHEAP_USERNAME;
-const isSandbox = process.env.NAMECHEAP_SANDBOX === 'true';
+const apiUser = process.env.NAMECHEAP_USERNAME
+const apiKey = process.env.NAMECHEAP_API_KEY
+const clientIp = process.env.NAMECHEAP_CLIENT_IP
+const userName = process.env.NAMECHEAP_USERNAME
+const isSandbox = process.env.NAMECHEAP_SANDBOX === "true"
+
+// ---- Runtime credential validation ----------------------------------------
+const missingVars = [
+  !apiUser && "NAMECHEAP_USERNAME",
+  !apiKey && "NAMECHEAP_API_KEY",
+  !clientIp && "NAMECHEAP_CLIENT_IP",
+].filter(Boolean) as string[]
+
+if (missingVars.length) {
+  throw new Error(
+    `Namecheap configuration error – missing env variable${missingVars.length > 1 ? "s" : ""}: ${missingVars.join(
+      ", ",
+    )}`,
+  )
+}
+// ---------------------------------------------------------------------------
 
 // API URLs
-const SANDBOX_API_URL = 'https://api.sandbox.namecheap.com/xml.response';
-const PRODUCTION_API_URL = 'https://api.namecheap.com/xml.response';
+const SANDBOX_API_URL = "https://api.sandbox.namecheap.com/xml.response"
+const PRODUCTION_API_URL = "https://api.namecheap.com/xml.response"
 
 // Get the appropriate API URL based on the environment
-const apiUrl = isSandbox ? SANDBOX_API_URL : PRODUCTION_API_URL;
+const apiUrl = isSandbox ? SANDBOX_API_URL : PRODUCTION_API_URL
 
 /**
  * Makes a request to the Namecheap API
@@ -34,33 +50,33 @@ export async function makeNamecheapApiRequest(command: string, params: Record<st
       UserName: userName,
       ClientIp: clientIp,
       Command: command,
-      ...params
-    };
+      ...params,
+    }
 
     // Make the API request
-    const response = await axios.get(apiUrl, { params: requestParams });
+    const response = await axios.get(apiUrl, { params: requestParams })
 
     // Parse the XML response
-    const parsedResponse = await parseStringPromise(response.data);
+    const parsedResponse = await parseStringPromise(response.data)
 
     // Check if the API call was successful
     // @ts-ignore
-    const apiResponse = parsedResponse.ApiResponse;
-    if (apiResponse.$.Status === 'ERROR') {
+    const apiResponse = parsedResponse.ApiResponse
+    if (apiResponse.$.Status === "ERROR") {
       const errors = apiResponse.Errors[0].Error.map((error: any) => ({
         number: error.$.Number,
-        message: error._
-      }));
-      throw new Error(`Namecheap API Error: ${JSON.stringify(errors)}`);
+        message: error._,
+      }))
+      throw new Error(`Namecheap API Error: ${JSON.stringify(errors)}`)
     }
 
     // @ts-ignore
-    return parsedResponse.ApiResponse;
+    return parsedResponse.ApiResponse
   } catch (error) {
     if (error instanceof Error) {
-      throw error;
+      throw error
     }
-    throw new Error(`Unexpected error: ${JSON.stringify(error)}`);
+    throw new Error(`Unexpected error: ${JSON.stringify(error)}`)
   }
 }
 
@@ -70,12 +86,12 @@ export async function makeNamecheapApiRequest(command: string, params: Record<st
  * @returns The availability status of each domain
  */
 export async function checkDomainAvailability(domains: string[]) {
-  const domainList = domains.join(',');
-  const response = await makeNamecheapApiRequest('namecheap.domains.check', {
-    DomainList: domainList
-  });
-  
-  return response.CommandResponse[0].DomainCheckResult;
+  const domainList = domains.join(",")
+  const response = await makeNamecheapApiRequest("namecheap.domains.check", {
+    DomainList: domainList,
+  })
+
+  return response.CommandResponse[0].DomainCheckResult
 }
 
 /**
@@ -99,53 +115,53 @@ export async function registerDomain(
   adminInfo?: ContactInfo,
   auxInfo?: ContactInfo,
   nameservers?: string[],
-  addFreeWhoisguard: boolean = true,
-  enableWhoisguard: boolean = true
+  addFreeWhoisguard = true,
+  enableWhoisguard = true,
 ) {
   // Prepare the parameters for domain registration
   const params: Record<string, string> = {
     DomainName: domain,
     Years: years.toString(),
-    AddFreeWhoisguard: addFreeWhoisguard ? 'yes' : 'no',
-    WGEnabled: enableWhoisguard ? 'yes' : 'no',
-  };
+    AddFreeWhoisguard: addFreeWhoisguard ? "yes" : "no",
+    WGEnabled: enableWhoisguard ? "yes" : "no",
+  }
 
   // Add registrant contact information
-  addContactInfoToParams(params, 'Registrant', registrantInfo);
+  addContactInfoToParams(params, "Registrant", registrantInfo)
 
   // Add tech contact information if provided
   if (techInfo) {
-    addContactInfoToParams(params, 'Tech', techInfo);
+    addContactInfoToParams(params, "Tech", techInfo)
   } else {
     // Use registrant info for tech if not provided
-    addContactInfoToParams(params, 'Tech', registrantInfo);
+    addContactInfoToParams(params, "Tech", registrantInfo)
   }
 
   // Add admin contact information if provided
   if (adminInfo) {
-    addContactInfoToParams(params, 'Admin', adminInfo);
+    addContactInfoToParams(params, "Admin", adminInfo)
   } else {
     // Use registrant info for admin if not provided
-    addContactInfoToParams(params, 'Admin', registrantInfo);
+    addContactInfoToParams(params, "Admin", registrantInfo)
   }
 
   // Add auxiliary billing contact information if provided
   if (auxInfo) {
-    addContactInfoToParams(params, 'AuxBilling', auxInfo);
+    addContactInfoToParams(params, "AuxBilling", auxInfo)
   } else {
     // Use registrant info for auxiliary billing if not provided
-    addContactInfoToParams(params, 'AuxBilling', registrantInfo);
+    addContactInfoToParams(params, "AuxBilling", registrantInfo)
   }
 
   // Add nameservers if provided
   if (nameservers && nameservers.length > 0) {
-    params.Nameservers = nameservers.join(',');
+    params.Nameservers = nameservers.join(",")
   }
 
   // Make the API request to register the domain
-  const response = await makeNamecheapApiRequest('namecheap.domains.create', params);
-  
-  return response.CommandResponse[0].DomainCreateResult[0];
+  const response = await makeNamecheapApiRequest("namecheap.domains.create", params)
+
+  return response.CommandResponse[0].DomainCreateResult[0]
 }
 
 /**
@@ -155,23 +171,23 @@ export async function registerDomain(
  * @param contactInfo The contact information
  */
 function addContactInfoToParams(params: Record<string, string>, prefix: string, contactInfo: ContactInfo) {
-  params[`${prefix}FirstName`] = contactInfo.firstName;
-  params[`${prefix}LastName`] = contactInfo.lastName;
-  params[`${prefix}Address1`] = contactInfo.address1;
+  params[`${prefix}FirstName`] = contactInfo.firstName
+  params[`${prefix}LastName`] = contactInfo.lastName
+  params[`${prefix}Address1`] = contactInfo.address1
   if (contactInfo.address2) {
-    params[`${prefix}Address2`] = contactInfo.address2;
+    params[`${prefix}Address2`] = contactInfo.address2
   }
-  params[`${prefix}City`] = contactInfo.city;
-  params[`${prefix}StateProvince`] = contactInfo.stateProvince;
-  params[`${prefix}PostalCode`] = contactInfo.postalCode;
-  params[`${prefix}Country`] = contactInfo.country;
-  params[`${prefix}Phone`] = contactInfo.phone;
-  params[`${prefix}EmailAddress`] = contactInfo.emailAddress;
+  params[`${prefix}City`] = contactInfo.city
+  params[`${prefix}StateProvince`] = contactInfo.stateProvince
+  params[`${prefix}PostalCode`] = contactInfo.postalCode
+  params[`${prefix}Country`] = contactInfo.country
+  params[`${prefix}Phone`] = contactInfo.phone
+  params[`${prefix}EmailAddress`] = contactInfo.emailAddress
   if (contactInfo.organizationName) {
-    params[`${prefix}OrganizationName`] = contactInfo.organizationName;
+    params[`${prefix}OrganizationName`] = contactInfo.organizationName
   }
   if (contactInfo.jobTitle) {
-    params[`${prefix}JobTitle`] = contactInfo.jobTitle;
+    params[`${prefix}JobTitle`] = contactInfo.jobTitle
   }
 }
 
@@ -179,16 +195,16 @@ function addContactInfoToParams(params: Record<string, string>, prefix: string, 
  * Interface for contact information
  */
 export interface ContactInfo {
-  firstName: string;
-  lastName: string;
-  address1: string;
-  address2?: string;
-  city: string;
-  stateProvince: string;
-  postalCode: string;
-  country: string;
-  phone: string;
-  emailAddress: string;
-  organizationName?: string;
-  jobTitle?: string;
+  firstName: string
+  lastName: string
+  address1: string
+  address2?: string
+  city: string
+  stateProvince: string
+  postalCode: string
+  country: string
+  phone: string
+  emailAddress: string
+  organizationName?: string
+  jobTitle?: string
 }

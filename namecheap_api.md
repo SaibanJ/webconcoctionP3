@@ -20,9 +20,9 @@ We have production as well as test server environments. The test server environm
 
 The following is the API Service URL for our sandbox environment:
 
-```
+\`\`\`
 https://api.sandbox.namecheap.com/xml.response
-```
+\`\`\`
 
 ### Production Environment
 
@@ -30,9 +30,9 @@ We can't stress this enough: Please test your APIs against our sandbox environme
 
 Here is the API Service URL for our production environment:
 
-```
+\`\`\`
 https://api.namecheap.com/xml.response
-```
+\`\`\`
 
 ## Enabling API Access
 
@@ -64,15 +64,15 @@ Whitelisted IPs are considered spam-free and safe for use.
 
 You can easily access API by sending your parameters as a HTTP-GET request query string to the service URLs. The response is given in XML format. The HTTP-GET request URL is formed by adding query parameters and values to a service URL. The first parameter begins after a `?` symbol. Successive parameters are included by adding an `&` symbol before each parameter. The format for adding queries is `parameter=values`. The following is the syntax of an API call:
 
-```
+\`\`\`
 https://<service url>/xml.response?ApiUser=<api_username>&ApiKey=<api_key>&UserName=<nc_username>&Command=<cmd_name>&ClientIp=<clientIPaddress>
-```
+\`\`\`
 
 ### Sample API Call
 
-```
+\`\`\`
 https://api.sandbox.namecheap.com/xml.response?ApiUser=ncuser&ApiKey=apikey&UserName=ncuser&ClientIp=121.22.123.22&Command=namecheap.domains.check&DomainList=domain1.com,domain2.com
-```
+\`\`\`
 
 The above call returns a response in XML format. You can parse this XML file to obtain the results and embed the data into the application you are creating. Please take a look at API Reference for all available commands and required parameters.
 
@@ -80,24 +80,24 @@ The above call returns a response in XML format. You can parse this XML file to 
 
 You can find out if an API call was successful or not by checking the ApiResponse Status. The following is the syntax of a successful API call:
 
-```xml
+\`\`\`xml
 <ApiResponse Status="OK">
   <Errors/>
   [#Requested data in XML format...]
 </ApiResponse>
-```
+\`\`\`
 
 ### Erroneous Call
 
 The following is the syntax of an erroneous API call:
 
-```xml
+\`\`\`xml
 <ApiResponse Status="ERROR">
   <Errors>
     <Error Number="0">Error message</Error>
   </Errors>
 </ApiResponse>
-```
+\`\`\`
 
 ## Resetting the API key
 
