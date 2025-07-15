@@ -1,7 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Mona_Sans as FontSans } from "next/font/google"
-import "../styles/globals.css"
+import "./globals.css"
 import { cn } from "@/lib/utils"
 
 const fontSans = FontSans({
