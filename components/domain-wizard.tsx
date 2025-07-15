@@ -87,7 +87,7 @@ export function DomainWizard() {
     const domainsToCheck = values.selectedTlds.map((tld) => `${values.searchTerm}${tld}`)
 
     try {
-      const response = await fetch("/api/namecheap/check", {
+      const response = await fetch("http://157.230.89.88/api/namecheap/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domains: domainsToCheck }),
@@ -111,7 +111,7 @@ export function DomainWizard() {
     setError("")
 
     try {
-      const response = await fetch("/api/namecheap/register", {
+      const response = await fetch("http://157.230.89.88/api/namecheap/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -149,7 +149,7 @@ export function DomainWizard() {
     setError("")
 
     try {
-      const response = await fetch("/api/whm/create", {
+      const response = await fetch("http://157.230.89.88/api/whm/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
