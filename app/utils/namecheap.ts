@@ -208,3 +208,69 @@ export interface ContactInfo {
   organizationName?: string
   jobTitle?: string
 }
+
+/**
+ * Transfers a domain from another registrar to Namecheap
+ * @param domain The domain name to transfer
+ * @param years The number of years to renew the domain for during transfer
+ * @param epp The EPP/Auth code for the domain
+ * @param registrantInfo The registrant contact information
+ * @param techInfo The technical contact information
+ * @param adminInfo The administrative contact information
+ * @param auxInfo The auxiliary billing contact information
+ * @param addFreeWhoisguard Whether to add free WhoisGuard
+ * @param enableWhoisguard Whether to enable WhoisGuard
+ * @returns The transfer result
+ */
+export async function transferDomain(
+  domain: string,
+  epp: string,
+  years: number = 1,
+  registrantInfo: ContactInfo,
+  techInfo?: ContactInfo,
+  adminInfo?: ContactInfo,
+  auxInfo?: ContactInfo,
+  addFreeWhoisguard = true,
+  enableWhoisguard = true,
+) {
+  // Prepare the parameters for domain transfer
+  const params: Record<string, string> = {
+    DomainName: domain,
+    EPPCode: epp,
+    Years: years.toString(),
+    AddFreeWhoisguard: addFreeWhoisguard ? "yes" : "no",
+    WGEnabled: enableWhoisguard ? "yes" : "no",
+  }
+
+  // Add registrant contact information
+  addContactInfoToParams(params, "Registrant", registrantInfo)
+
+  // Add tech contact information if provided
+  if (techInfo) {
+    addContactInfoToParams(params, "Tech", techInfo)
+  } else {
+    // Use registrant info for tech if not provided
+    addContactInfoToParams(params, "Tech", registrantInfo)
+  }
+
+  // Add admin contact information if provided
+  if (adminInfo) {
+    addContactInfoToParams(params, "Admin", adminInfo)
+  } else {
+    // Use registrant info for admin if not provided
+    addContactInfoToParams(params, "Admin", registrantInfo)
+  }
+
+  // Add auxiliary billing contact information if provided
+  if (auxInfo) {
+    addContactInfoToParams(params, "AuxBilling", auxInfo)
+  } else {
+    // Use registrant info for auxiliary billing if not provided
+    addContactInfoToParams(params, "AuxBilling", registrantInfo)
+  }
+
+  // Make the API request to transfer the domain
+  const response = await makeNamecheapApiRequest("namecheap.domains.transfer.create", params)
+
+  return response.CommandResponse[0].DomainTransferCreateResult[0]
+}
