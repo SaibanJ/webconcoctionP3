@@ -67,7 +67,7 @@ export function DomainWizard() {
   const registrationForm = useForm<z.infer<typeof RegistrationSchema>>({
     resolver: zodResolver(RegistrationSchema),
     defaultValues: {
-      years: "1",
+      years: 1,
       registrantInfo: initialContactInfo,
       whoisguard: true,
     },
@@ -318,7 +318,7 @@ export function DomainWizard() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Registration Period</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={String(field.value)}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select years" />

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
+import type { TooltipPayload } from "recharts/types/state/tooltipSlice"
 
 import { cn } from "@/lib/utils"
 
@@ -104,8 +105,7 @@ const ChartTooltip = RechartsPrimitive.Tooltip
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-    React.ComponentProps<"div"> & {
+  RechartsPrimitive.TooltipContentProps<any, any> & React.ComponentProps<"div"> & {
       hideLabel?: boolean
       hideIndicator?: boolean
       indicator?: "line" | "dot" | "dashed"
@@ -146,12 +146,16 @@ const ChartTooltipContent = React.forwardRef<
           ? config[label as keyof typeof config]?.label || label
           : itemConfig?.label
 
+      // If labelFormatter is provided and value is a string or number, use it.
+      // Otherwise, render value directly if it exists.
       if (labelFormatter) {
-        return (
-          <div className={cn("font-medium", labelClassName)}>
-            {labelFormatter(value, payload)}
-          </div>
-        )
+        if (typeof value === 'string' || typeof value === 'number') {
+          return (
+            <div className={cn("font-medium", labelClassName)}>
+              {labelFormatter(value, payload)}
+            </div>
+          );
+        }
       }
 
       if (!value) {
@@ -260,8 +264,9 @@ const ChartLegend = RechartsPrimitive.Legend
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+  React.ComponentProps<"div"> & {
+      payload?: RechartsPrimitive.LegendPayload[];
+      verticalAlign?: "top" | "middle" | "bottom";
       hideIcon?: boolean
       nameKey?: string
     }
