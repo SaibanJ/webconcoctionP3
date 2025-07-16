@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="production adjustments" />
+    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="added webhook for auto deploys">
+      <change beforePath="$PROJECT_DIR$/components/domain-wizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/domain-wizard.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -108,7 +110,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752540449349</updated>
       <workItem from="1752540451260" duration="3071000" />
-      <workItem from="1752544074988" duration="19692000" />
+      <workItem from="1752544074988" duration="21079000" />
     </task>
     <task id="LOCAL-00001" summary="backend updates">
       <option name="closed" value="true" />
@@ -190,7 +192,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752627867344</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="added webhook for auto deploys">
+      <option name="closed" value="true" />
+      <created>1752629467241</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1752629467241</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +231,7 @@
     <MESSAGE value="backend updates" />
     <MESSAGE value="resolved build issues" />
     <MESSAGE value="production adjustments" />
-    <option name="LAST_COMMIT_MESSAGE" value="production adjustments" />
+    <MESSAGE value="added webhook for auto deploys" />
+    <option name="LAST_COMMIT_MESSAGE" value="added webhook for auto deploys" />
   </component>
 </project>
