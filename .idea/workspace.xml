@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="production adjustments">
-      <change beforePath="$PROJECT_DIR$/components/domain-wizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/domain-wizard.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="production adjustments" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -110,7 +108,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752540449349</updated>
       <workItem from="1752540451260" duration="3071000" />
-      <workItem from="1752544074988" duration="18372000" />
+      <workItem from="1752544074988" duration="19692000" />
     </task>
     <task id="LOCAL-00001" summary="backend updates">
       <option name="closed" value="true" />
@@ -184,7 +182,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752608488761</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="production adjustments">
+      <option name="closed" value="true" />
+      <created>1752627867344</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1752627867344</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
