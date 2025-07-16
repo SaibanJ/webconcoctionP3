@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="added webhook for auto deploys" />
+    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="test" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -108,7 +108,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752540449349</updated>
       <workItem from="1752540451260" duration="3071000" />
-      <workItem from="1752544074988" duration="22637000" />
+      <workItem from="1752544074988" duration="23224000" />
     </task>
     <task id="LOCAL-00001" summary="backend updates">
       <option name="closed" value="true" />
@@ -206,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752631633670</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="test">
+      <option name="closed" value="true" />
+      <created>1752633200766</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1752633200766</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +246,7 @@
     <MESSAGE value="resolved build issues" />
     <MESSAGE value="production adjustments" />
     <MESSAGE value="added webhook for auto deploys" />
-    <option name="LAST_COMMIT_MESSAGE" value="added webhook for auto deploys" />
+    <MESSAGE value="test" />
+    <option name="LAST_COMMIT_MESSAGE" value="test" />
   </component>
 </project>
