@@ -27,6 +27,29 @@ export const RegistrationSchema = z.object({
   whoisguard: z.boolean().default(true),
 })
 
+export const TransferSchema = z.object({
+  years: z.string().transform(Number),
+  epp: z.string().min(1, "EPP/Auth code is required."),
+  registrantInfo: z.object({
+    firstName: z.string().min(1, "First name is required."),
+    lastName: z.string().min(1, "Last name is required."),
+    address1: z.string().min(1, "Address is required."),
+    address2: z.string().optional(),
+    city: z.string().min(1, "City is required."),
+    stateProvince: z.string().min(1, "State/Province is required."),
+    postalCode: z.string().min(1, "Postal code is required."),
+    country: z.string().min(1, "Country is required."),
+    phone: z
+      .string()
+      .min(1, "Phone number is required.")
+      .regex(/^\+\d{1,3}\.\d+$/, "Invalid format. Use +1.1234567890"),
+    emailAddress: z.string().email("Invalid email address."),
+    organizationName: z.string().optional(),
+    jobTitle: z.string().optional(),
+  }),
+  whoisguard: z.boolean().default(true),
+})
+
 export const HostingSchema = z.object({
   hostingUsername: z
     .string()
