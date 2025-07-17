@@ -1,71 +1,21 @@
 "use client"
 
-
-import { useState, useRef } from "react"
+import { useState } from "react"
 import Link from "next/link"
-import { Canvas, useFrame } from "@react-three/fiber"
-import { OrbitControls, TorusKnot, Environment, Stars } from "@react-three/drei"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Rocket, Gem, ShieldCheck, Zap, Search, ArrowRight, CheckCircle } from "lucide-react"
-import type { Mesh, PointLight } from "three"
-import { Vector3 } from "three"
+import { Rocket, ShieldCheck, Zap, Search, ArrowRight, CheckCircle } from "lucide-react"
 import { PricingToggle } from "@/components/pricing-toggle"
 import { ThemeToggleButton } from "@/components/theme-toggle-button"
 import { useTheme } from "next-themes"
-import { CustomAnimatedGraphic } from "@/components/custom-animated-graphic"
 import { PopularPlanCard } from "@/components/popular-plan-card"
-import { DomainWizard } from "./domain-wizard"
-
-
-function ThreeDScene({ theme }: { theme?: string }) {
-  const meshRef = useRef<Mesh>(null!)
-  const lightRef = useRef<PointLight>(null!)
-
-  useFrame((state, delta) => {
-    // Rotate the main mesh automatically
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.1
-      meshRef.current.rotation.y += delta * 0.15
-    }
-
-    // Make the dynamic light follow the mouse cursor
-    if (lightRef.current) {
-      // Map pointer coordinates (-1 to 1) to the viewport size for positioning
-      const targetX = (state.pointer.x * state.viewport.width) / 2
-      const targetY = (state.pointer.y * state.viewport.height) / 2
-
-      // Create a target vector for the light's position
-      const targetPosition = new Vector3(targetX, targetY, 3)
-
-      // Smoothly interpolate the light's position to the target for a fluid motion
-      lightRef.current.position.lerp(targetPosition, 0.05)
-    }
-  })
-
-  return (
-      <>
-        <ambientLight intensity={theme === "dark" ? 0.2 : 0.8} />
-        {/* Static main light for overall scene illumination */}
-        <pointLight position={[10, 10, 10]} intensity={1.5} />
-
-        {/* This is the new dynamic light that follows the mouse */}
-        <pointLight ref={lightRef} color="#c084fc" intensity={8} distance={10} />
-
-        <TorusKnot ref={meshRef} args={[1, 0.3, 200, 32]}>
-          <meshStandardMaterial color="#9333ea" roughness={0.1} metalness={0.8} />
-        </TorusKnot>
-        {theme === "dark" && <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />}
-        <Environment preset={theme === "dark" ? "city" : "studio"} />
-      </>
-  )
-}
-
+import { AwesomeHeroAnimation } from "@/components/awesome-hero-animation"
+import { DomainWizard } from "@/components/domain-wizard";
 
 export function LandingPage() {
   const [isYearly, setIsYearly] = useState(false)
-  const {theme} = useTheme()
+  const { theme } = useTheme()
 
   const pricingPackages = [
     {
@@ -103,15 +53,11 @@ export function LandingPage() {
     },
   ]
 
-
   return (
-      <div
-          className="flex flex-col min-h-[100dvh] bg-white dark:bg-[#0a0a0a] text-gray-800 dark:text-gray-200 font-sans">
-        <header
-            className="px-4 lg:px-8 h-16 flex items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-white/80 dark:bg-black/20 border-b border-gray-200 dark:border-gray-800">
+      <div className="flex flex-col min-h-[100dvh] bg-white dark:bg-[#0a0a0a] text-gray-800 dark:text-gray-200 font-sans">
+        <header className="px-4 lg:px-8 h-16 flex items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-white/80 dark:bg-black/20 border-b border-gray-200 dark:border-gray-800">
           <div className="max-w-7xl mx-auto w-full flex items-center">
             <Link href="#" className="flex items-center justify-center">
-              <Gem className="h-6 w-6 text-purple-500"/>
               <span className="ml-2 text-xl font-bold tracking-wider text-gray-900 dark:text-white">WebConcoction</span>
             </Link>
             <nav className="ml-auto hidden lg:flex gap-6 text-sm font-medium">
@@ -141,9 +87,8 @@ export function LandingPage() {
               </Link>
             </nav>
             <div className="ml-4 flex items-center gap-2">
-              <ThemeToggleButton/>
-              <Button className="hidden lg:inline-flex bg-purple-600 hover:bg-purple-700 text-white">Get
-                Started</Button>
+              <ThemeToggleButton />
+              <Button className="hidden lg:inline-flex bg-purple-600 hover:bg-purple-700 text-white">Get Started</Button>
             </div>
           </div>
         </header>
@@ -151,10 +96,7 @@ export function LandingPage() {
         <main className="flex-1">
           <section className="w-full h-screen flex items-center justify-center relative bg-gray-50 dark:bg-transparent">
             <div className="absolute inset-0 z-0">
-              <Canvas>
-                <ThreeDScene theme={theme}/>
-                <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5}/>
-              </Canvas>
+              <AwesomeHeroAnimation theme={theme} />
             </div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
               <div className="space-y-4">
@@ -170,7 +112,7 @@ export function LandingPage() {
                       size="lg"
                       className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/20"
                   >
-                    Start Building <ArrowRight className="ml-2 h-4 w-4"/>
+                    Start Building <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                   <Button
                       size="lg"
@@ -184,7 +126,6 @@ export function LandingPage() {
             </div>
           </section>
 
-
           <section id="services" className="w-full py-20 md:py-32 bg-gray-100 dark:bg-[#111111]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center space-y-4 mb-12">
@@ -196,10 +137,9 @@ export function LandingPage() {
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Card
-                    className="bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
+                <Card className="bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
                   <CardHeader className="flex flex-row items-center gap-4">
-                    <Rocket className="h-8 w-8 text-purple-500"/>
+                    <Rocket className="h-8 w-8 text-purple-500" />
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">Blazing Fast Hosting</h3>
                   </CardHeader>
                   <CardContent>
@@ -208,10 +148,9 @@ export function LandingPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card
-                    className="bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
+                <Card className="bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
                   <CardHeader className="flex flex-row items-center gap-4">
-                    <ShieldCheck className="h-8 w-8 text-purple-500"/>
+                    <ShieldCheck className="h-8 w-8 text-purple-500" />
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">Ironclad Security</h3>
                   </CardHeader>
                   <CardContent>
@@ -220,10 +159,9 @@ export function LandingPage() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card
-                    className="bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
+                <Card className="bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2">
                   <CardHeader className="flex flex-row items-center gap-4">
-                    <Zap className="h-8 w-8 text-purple-500"/>
+                    <Zap className="h-8 w-8 text-purple-500" />
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">Effortless Scalability</h3>
                   </CardHeader>
                   <CardContent>
@@ -244,13 +182,12 @@ export function LandingPage() {
                     Why Choose WebConcoction?
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400">
-                    We're not just another hosting provider. We're your partner in digital success, committed to
-                    providing
+                    We're not just another hosting provider. We're your partner in digital success, committed to providing
                     an elite platform for creators and businesses.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0"/>
+                      <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">Developer-Friendly</h4>
                         <p className="text-gray-600 dark:text-gray-400">
@@ -259,7 +196,7 @@ export function LandingPage() {
                       </div>
                     </li>
                     <li className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0"/>
+                      <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">24/7 Expert Support</h4>
                         <p className="text-gray-600 dark:text-gray-400">
@@ -268,7 +205,7 @@ export function LandingPage() {
                       </div>
                     </li>
                     <li className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0"/>
+                      <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">99.9% Uptime Guarantee</h4>
                         <p className="text-gray-600 dark:text-gray-400">
@@ -278,9 +215,8 @@ export function LandingPage() {
                     </li>
                   </ul>
                 </div>
-                <div
-                    className="group relative w-full h-80 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 flex items-center justify-center p-8 overflow-hidden transition-transform duration-500 ease-in-out hover:scale-105">
-                  <CustomAnimatedGraphic/>
+                <div className="group relative w-full h-80 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 flex items-center justify-center p-8 overflow-hidden transition-transform duration-500 ease-in-out hover:scale-105">
+                  {/* The AwesomeHeroAnimation was here, now it's in the hero section */}
                 </div>
               </div>
             </div>
@@ -296,15 +232,14 @@ export function LandingPage() {
                   Choose the perfect plan for your needs. Switch anytime.
                 </p>
                 <div className="flex items-center justify-center gap-4 pt-4">
-                  <PricingToggle onToggle={setIsYearly}/>
-                  <span
-                      className="ml-2 text-sm font-medium text-purple-500 dark:text-purple-400">(Save 2 months!)</span>
+                  <PricingToggle onToggle={setIsYearly} />
+                  <span className="ml-2 text-sm font-medium text-purple-500 dark:text-purple-400">(Save 2 months!)</span>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                 {pricingPackages.map((pkg) =>
                     pkg.popular ? (
-                        <PopularPlanCard key={pkg.name} pkg={pkg} isYearly={isYearly}/>
+                        <PopularPlanCard key={pkg.name} pkg={pkg} isYearly={isYearly} />
                     ) : (
                         <Card
                             key={pkg.name}
@@ -319,22 +254,21 @@ export function LandingPage() {
                               <span className="text-gray-500 dark:text-gray-400">/month</span>
                             </div>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {isYearly ? `${pkg.yearlyPrice} billed annually` : "Billed monthly"}
+                              {isYearly ? `$${pkg.yearlyPrice} billed annually` : "Billed monthly"}
                             </p>
                           </CardHeader>
                           <CardContent className="flex-grow">
                             <ul className="space-y-3">
                               {pkg.features.map((feature) => (
                                   <li key={feature} className="flex items-center gap-3">
-                                    <CheckCircle className="h-5 w-5 text-green-500"/>
+                                    <CheckCircle className="h-5 w-5 text-green-500" />
                                     <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                                   </li>
                               ))}
                             </ul>
                           </CardContent>
                           <CardFooter>
-                            <Button
-                                className="w-full bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white">
+                            <Button className="w-full bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white">
                               Choose Plan
                             </Button>
                           </CardFooter>
@@ -362,7 +296,7 @@ export function LandingPage() {
                     e-commerce store."
                   </p>
                   <div className="flex items-center gap-4">
-                    <img src="/diverse-person-avatar.png" alt="Avatar" className="w-10 h-10 rounded-full"/>
+                    <img src="/diverse-person-avatar.png" alt="Avatar" className="w-10 h-10 rounded-full" />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-white">Sarah L.</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Founder of StyleHub</p>
@@ -375,7 +309,7 @@ export function LandingPage() {
                     helpful during the process."
                   </p>
                   <div className="flex items-center gap-4">
-                    <img src="/person-avatar-2.png" alt="Avatar" className="w-10 h-10 rounded-full"/>
+                    <img src="/person-avatar-2.png" alt="Avatar" className="w-10 h-10 rounded-full" />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-white">Mike R.</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Freelance Developer</p>
@@ -388,7 +322,7 @@ export function LandingPage() {
                     deployments."
                   </p>
                   <div className="flex items-center gap-4">
-                    <img src="/person-avatar-3.png" alt="Avatar" className="w-10 h-10 rounded-full"/>
+                    <img src="/person-avatar-3.png" alt="Avatar" className="w-10 h-10 rounded-full" />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-white">Chen W.</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">CTO at Innovatech</p>
@@ -403,18 +337,14 @@ export function LandingPage() {
               id="domain-wizard"
               className="w-full py-20 md:py-32 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900"
           >
-            <div className="flex justify-center">
-              <DomainWizard/>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <DomainWizard />
             </div>
-
           </section>
-
-
         </main>
 
         <footer className="bg-gray-100 dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-gray-800">
-          <div
-              className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               &copy; {new Date().getFullYear()} WebConcoction. All rights reserved.
             </p>
@@ -430,6 +360,4 @@ export function LandingPage() {
         </footer>
       </div>
   )
-
 }
-
