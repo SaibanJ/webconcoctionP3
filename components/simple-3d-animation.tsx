@@ -30,7 +30,6 @@ export function Simple3DAnimation({ theme }: { theme?: string }) {
     return (
         <Canvas>
             <RotatingSphere theme={theme} />
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
         </Canvas>
     )
 }

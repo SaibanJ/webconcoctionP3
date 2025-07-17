@@ -87,7 +87,7 @@ export function AwesomeHeroAnimation({ theme }: { theme?: string }) {
             onContextRestored={handleContextRestored}
         >
             <AwesomeSceneContent key={contextKey} theme={theme} /> {/* Use key to force re-mount */}
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+            
             <EffectComposer>
                 <Bloom luminanceThreshold={0.8} luminanceSmoothing={0.9} height={300} />
                 <Vignette eskil={false} offset={0.1} darkness={0.8} />

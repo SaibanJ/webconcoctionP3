@@ -12,6 +12,7 @@ import { useTheme } from "next-themes"
 import { PopularPlanCard } from "@/components/popular-plan-card"
 import { AwesomeHeroAnimation } from "@/components/awesome-hero-animation"
 import { DomainWizard } from "@/components/domain-wizard";
+import { MobileNav } from "@/components/mobile-nav";
 
 export function LandingPage() {
   const [isYearly, setIsYearly] = useState(false)
@@ -86,9 +87,13 @@ export function LandingPage() {
                 Testimonials
               </Link>
             </nav>
-            <div className="ml-4 flex items-center gap-2">
+            <div className="ml-4 hidden lg:flex items-center gap-2">
               <ThemeToggleButton />
-              <Button className="hidden lg:inline-flex bg-purple-600 hover:bg-purple-700 text-white">Get Started</Button>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white">Get Started</Button>
+            </div>
+            <div className="ml-auto lg:hidden flex items-center gap-2">
+              <ThemeToggleButton />
+              <MobileNav />
             </div>
           </div>
         </header>
