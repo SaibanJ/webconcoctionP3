@@ -209,11 +209,15 @@ export interface ContactInfo {
   jobTitle?: string
 }
 
+
+
+
+
 /**
  * Transfers a domain from another registrar to Namecheap
  * @param domain The domain name to transfer
- * @param years The number of years to renew the domain for during transfer
  * @param epp The EPP/Auth code for the domain
+ * @param years The number of years to renew the domain for during transfer
  * @param registrantInfo The registrant contact information
  * @param techInfo The technical contact information
  * @param adminInfo The administrative contact information
@@ -273,4 +277,32 @@ export async function transferDomain(
   const response = await makeNamecheapApiRequest("namecheap.domains.transfer.create", params)
 
   return response.CommandResponse[0].DomainTransferCreateResult[0]
+}
+
+/**
+ * Gets the pricing for a product
+ * @param productType The type of product (e.g., DOMAIN)
+ * @param productCategory The category of the product (e.g., DOMAIN)
+ * @param productName The name of the product (e.g., com)
+ * @returns The pricing information
+ */
+export async function getPricing(productType: string, productCategory: string, productName: string) {
+  const response = await makeNamecheapApiRequest("namecheap.users.getPricing", {
+    ProductType: productType,
+    ProductCategory: productCategory,
+    ProductName: productName,
+  });
+
+  return response.CommandResponse[0].UserGetPricingResult[0];
+}
+
+
+
+/**
+ * Gets the account balances
+ * @returns The account balance information
+ */
+export async function getBalances() {
+  const response = await makeNamecheapApiRequest("namecheap.users.getBalances", {});
+  return response.CommandResponse[0].UserGetBalancesResult[0].$;
 }

@@ -6,6 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import type { z } from "zod"
 import { SearchSchema, RegistrationSchema, TransferSchema, HostingSchema } from "@/lib/schemas"
 import type { ContactInfo } from "@/app/utils/namecheap"
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements } from "@stripe/react-stripe-js"
+import CheckoutForm from "./checkout-form"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,7 +21,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Loader2, Search, CheckCircle, XCircle, ArrowRight, PartyPopper, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-type Step = "SEARCH" | "RESULTS" | "REGISTER" | "TRANSFER" | "HOSTING" | "COMPLETE"
+type Step = "SEARCH" | "RESULTS" | "REGISTER" | "TRANSFER" | "HOSTING" | "COMPLETE" | "PAYMENT"
 type DomainMode = "REGISTER" | "TRANSFER"
 type DomainResult = {
   domain: string
@@ -53,6 +56,8 @@ const hostingPlans = [
   { id: "webcrtae_elite", name: "Elite", description: "For power users & agencies." },
 ]
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
 export function DomainWizard() {
   const [step, setStep] = useState<Step>("SEARCH")
   const [mode, setMode] = useState<DomainMode>("REGISTER")
@@ -61,6 +66,7 @@ export function DomainWizard() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [selectedDomain, setSelectedDomain] = useState<DomainResult | null>(null)
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
 
   const searchForm = useForm<z.infer<typeof SearchSchema>>({
     resolver: zodResolver(SearchSchema),
@@ -97,14 +103,12 @@ export function DomainWizard() {
     setResults([])
     setSearchTerm(values.searchTerm)
 
-    // For TRANSFER mode, use the full domain name provided by the user
-    // For REGISTER mode, append the selected TLDs to the search term
-    const domainsToCheck = mode === "TRANSFER" 
-      ? [values.searchTerm] // Use the full domain name as-is
+    const domainsToCheck = mode === "TRANSFER"
+      ? [values.searchTerm]
       : values.selectedTlds.map((tld) => `${values.searchTerm}${tld}`)
 
     try {
-      const response = await fetch("https://webconcoction.com/api/namecheap/check", {
+      const response = await fetch("/api/namecheap/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domains: domainsToCheck }),
@@ -112,18 +116,36 @@ export function DomainWizard() {
       const data = await response.json()
       if (!response.ok || !data.success) throw new Error(data.message || "Failed to check availability.")
 
-      // Process results based on the current mode
-      const processedResults = data.data.map((r: any) => ({ 
-        domain: r.$.Domain, 
-        available: r.$.Available === "true", 
-        price: "12.99",
-        // Add a suggestion property based on mode and availability
-        suggestion: mode === "REGISTER" && r.$.Available === "false" 
-          ? "TRANSFER" 
-          : mode === "TRANSFER" && r.$.Available === "true" 
-            ? "REGISTER" 
-            : null
-      }))
+      const processedResults = await Promise.all(data.data.map(async (r: any) => {
+        const tld = r.$.Domain.split(".").pop()
+        let price = "N/A";
+        if (r.$.Available === "true") {
+            try {
+                const pricingResponse = await fetch('/api/stripe/payment-intent', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ domain: r.$.Domain, years: 1, calculatePrice: true }),
+                });
+                const pricingData = await pricingResponse.json();
+                if (pricingResponse.ok) {
+                    price = (pricingData.price / 100).toFixed(2);
+                }
+            } catch (e) {
+                console.error("Failed to fetch price for", r.$.Domain, e);
+            }
+        }
+
+        return {
+          domain: r.$.Domain,
+          available: r.$.Available === "true",
+          price,
+          suggestion: mode === "REGISTER" && r.$.Available === "false"
+            ? "TRANSFER"
+            : mode === "TRANSFER" && r.$.Available === "true"
+              ? "REGISTER"
+              : null
+        }
+      }));
 
       setResults(processedResults)
       setStep("RESULTS")
@@ -140,31 +162,19 @@ export function DomainWizard() {
     setError("")
 
     try {
-      const response = await fetch("https://webconcoction.com/api/namecheap/register", {
+      const response = await fetch("/api/stripe/payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           domain: selectedDomain.domain,
           years: values.years,
-          registrantInfo: values.registrantInfo,
-          enableWhoisguard: values.whoisguard,
         }),
       })
       const data = await response.json()
-      if (!response.ok || !data.success) throw new Error(data.message || "Failed to register domain.")
-      const baseUsername = selectedDomain.domain.split(".")[0]
-      const sanitizedUsername = baseUsername
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "")
-        .slice(0, 16)
+      if (!response.ok) throw new Error(data.error || "Failed to create payment intent.")
 
-      hostingForm.reset({
-        hostingUsername: sanitizedUsername,
-        hostingPassword: "",
-        plan: "webcrtae_basic",
-      })
-
-      setStep("HOSTING")
+      setClientSecret(data.clientSecret)
+      setStep("PAYMENT")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unexpected error occurred.")
     } finally {
@@ -178,32 +188,19 @@ export function DomainWizard() {
     setError("")
 
     try {
-      const response = await fetch("https://webconcoction.com/api/namecheap/transfer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          domain: selectedDomain.domain,
-          epp: values.epp,
-          years: values.years,
-          registrantInfo: values.registrantInfo,
-          enableWhoisguard: values.whoisguard,
-        }),
-      })
-      const data = await response.json()
-      if (!response.ok || !data.success) throw new Error(data.message || "Failed to transfer domain.")
-      const baseUsername = selectedDomain.domain.split(".")[0]
-      const sanitizedUsername = baseUsername
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "")
-        .slice(0, 16)
+        const response = await fetch("/api/stripe/payment-intent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              domain: selectedDomain.domain,
+              years: values.years,
+            }),
+          })
+          const data = await response.json()
+          if (!response.ok) throw new Error(data.error || "Failed to create payment intent.")
 
-      hostingForm.reset({
-        hostingUsername: sanitizedUsername,
-        hostingPassword: "",
-        plan: "webcrtae_basic",
-      })
-
-      setStep("HOSTING")
+          setClientSecret(data.clientSecret)
+          setStep("PAYMENT")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unexpected error occurred.")
     } finally {
@@ -217,7 +214,7 @@ export function DomainWizard() {
     setError("")
 
     try {
-      const response = await fetch("https://webconcoction.com/api/whm/create", {
+      const response = await fetch("/api/whm/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -229,9 +226,7 @@ export function DomainWizard() {
         }),
       })
       const data = await response.json()
-      // The backend now sends a proper status code and a JSON error object.
       if (!response.ok) {
-        // data.error will contain the detailed message from the backend
         throw new Error(data.error || "Failed to create hosting account.")
       }
       setStep("COMPLETE")
@@ -271,14 +266,14 @@ export function DomainWizard() {
       </CardHeader>
       <div className="mb-4 px-6">
         <div className="flex justify-center">
-          <ToggleGroup 
-            type="single" 
-            value={mode} 
+          <ToggleGroup
+            type="single"
+            value={mode}
             onValueChange={(value) => {
               if (value) {
                 setMode(value as DomainMode);
               }
-            }} 
+            }}
             className="justify-center"
           >
             <ToggleGroupItem value="REGISTER" aria-label="Register domain">Register</ToggleGroupItem>
@@ -296,10 +291,10 @@ export function DomainWizard() {
                 render={({ field }) => (
                   <FormItem className="flex-grow">
                     <FormControl>
-                      <Input 
-                        placeholder={mode === "REGISTER" ? "e.g., my-awesome-idea" : "e.g., example.com"} 
-                        {...field} 
-                        className="text-lg h-12" 
+                      <Input
+                        placeholder={mode === "REGISTER" ? "e.g., my-awesome-idea" : "e.g., example.com"}
+                        {...field}
+                        className="text-lg h-12"
                       />
                     </FormControl>
                     <FormMessage />
@@ -352,16 +347,15 @@ export function DomainWizard() {
       </CardHeader>
       <div className="mb-4 px-6">
         <div className="flex justify-center">
-          <ToggleGroup 
-            type="single" 
-            value={mode} 
+          <ToggleGroup
+            type="single"
+            value={mode}
             onValueChange={(value) => {
               if (value) {
                 setMode(value as DomainMode);
-                // Re-submit the search with the new mode
                 searchForm.handleSubmit(onSearchSubmit)();
               }
-            }} 
+            }}
             className="justify-center"
           >
             <ToggleGroupItem value="REGISTER" aria-label="Register domain">Register</ToggleGroupItem>
@@ -396,14 +390,13 @@ export function DomainWizard() {
                 </div>
               </div>
 
-              {/* Suggestion message */}
               {result.suggestion && (
                 <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-amber-600" />
                     <span className="text-sm text-amber-800 dark:text-amber-200">
-                      {result.suggestion === "TRANSFER" 
-                        ? "This domain is already registered. Would you like to transfer it instead?" 
+                      {result.suggestion === "TRANSFER"
+                        ? "This domain is already registered. Would you like to transfer it instead?"
                         : "This domain is available for registration. Would you like to register it instead?"}
                     </span>
                   </div>
@@ -422,7 +415,6 @@ export function DomainWizard() {
                 </div>
               )}
 
-              {/* Action buttons */}
               {((mode === "REGISTER" && result.available) || (mode === "TRANSFER" && !result.available)) && (
                 <div className="mt-2 flex justify-end gap-2">
                   <Button
@@ -459,16 +451,15 @@ export function DomainWizard() {
       </CardHeader>
       <div className="mb-4 px-6">
         <div className="flex justify-center">
-          <ToggleGroup 
-            type="single" 
-            value={mode} 
+          <ToggleGroup
+            type="single"
+            value={mode}
             onValueChange={(value) => {
               if (value) {
                 setMode(value as DomainMode);
-                // Force re-render by setting step to itself
                 setStep(step);
               }
-            }} 
+            }}
             className="justify-center"
           >
             <ToggleGroupItem value="REGISTER" aria-label="Register domain">Register</ToggleGroupItem>
@@ -676,16 +667,15 @@ export function DomainWizard() {
       </CardHeader>
       <div className="mb-4 px-6">
         <div className="flex justify-center">
-          <ToggleGroup 
-            type="single" 
-            value={mode} 
+          <ToggleGroup
+            type="single"
+            value={mode}
             onValueChange={(value) => {
               if (value) {
                 setMode(value as DomainMode);
-                // Force re-render by setting step to itself
                 setStep(step);
               }
-            }} 
+            }}
             className="justify-center"
           >
             <ToggleGroupItem value="REGISTER" aria-label="Register domain">Register</ToggleGroupItem>
@@ -1015,13 +1005,32 @@ export function DomainWizard() {
     </Card>
   )
 
+  const renderPaymentStep = () => (
+    <Card className="w-full max-w-2xl">
+      <CardHeader>
+        <CardTitle className="text-2xl">Complete Your Purchase</CardTitle>
+        <CardDescription>
+          You are purchasing {selectedDomain?.domain} for {registrationForm.getValues("years")} year(s).
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {clientSecret && stripePromise && (
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <CheckoutForm />
+          </Elements>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+
   const renderError = () =>
     error && (
       <div className="w-full max-w-2xl mt-4 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive flex items-center gap-3">
         <AlertTriangle className="h-5 w-5" />
         <p className="text-sm font-medium">{error}</p>
       </div>
-    )
+    );
 
   const renderStep = () => {
     switch (step) {
@@ -1030,17 +1039,17 @@ export function DomainWizard() {
       case "RESULTS":
         return renderResultsStep()
       case "REGISTER":
-        // If we're in REGISTER step but mode is TRANSFER, update the mode
         if (mode !== "REGISTER") setMode("REGISTER")
         return renderRegisterStep()
       case "TRANSFER":
-        // If we're in TRANSFER step but mode is REGISTER, update the mode
         if (mode !== "TRANSFER") setMode("TRANSFER")
         return renderTransferStep()
       case "HOSTING":
         return renderHostingStep()
       case "COMPLETE":
         return renderCompleteStep()
+      case "PAYMENT":
+        return renderPaymentStep()
       default:
         return renderSearchStep()
     }
