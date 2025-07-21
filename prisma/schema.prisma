@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String?
+  firstName      String?
+  lastName       String?
+  address1       String?
+  address2       String?
+  city           String?
+  stateProvince  String?
+  postalCode     String?
+  country        String?
+  phone          String?
+  orders         Order[]
+  createdAt      DateTime  @default(now())
+}
+
+model Order {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  status         String    // e.g., "PENDING", "COMPLETED", "FAILED"
+  hostingPlan    String    // e.g., "STARTER", "PRO", "BUSINESS"
+  domainAction   String    // e.g., "REGISTER", "TRANSFER"
+  domainName     String
+  years          Int
+  totalPrice     Float
+  eppCode        String?   // For domain transfers
+  createdAt      DateTime  @default(now())
+  stripePaymentId String?  @unique
+  domain         Domain?   @relation(fields: [domainName], references: [name])
+}
+
+model Domain {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  order     Order[]
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

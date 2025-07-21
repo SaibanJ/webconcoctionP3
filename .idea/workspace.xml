@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="stripe and supabase integration" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="main" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;SaibanJ&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/SaibanJ/webconcoctionP3.git&quot;,
+    &quot;accountId&quot;: &quot;11d40959-0fc2-424c-8de1-4dcc055a7ec1&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2ztBNc2A2LAArqyIkWp5STIubKb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;test&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/jrs/WebstormProjects/Webconcoction&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/api/whm/create" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-WS-251.26094.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="" />
+      <created>1752540449349</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1752540449349</updated>
+      <workItem from="1752540451260" duration="3071000" />
+      <workItem from="1752544074988" duration="24529000" />
+    </task>
+    <task id="LOCAL-00001" summary="backend updates">
+      <option name="closed" value="true" />
+      <created>1752542916997</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1752542916997</updated>
+    </task>
+    <task id="LOCAL-00002" summary="backend updates">
+      <option name="closed" value="true" />
+      <created>1752602519413</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1752602519413</updated>
+    </task>
+    <task id="LOCAL-00003" summary="backend updates">
+      <option name="closed" value="true" />
+      <created>1752602572832</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1752602572832</updated>
+    </task>
+    <task id="LOCAL-00004" summary="resolved build issues">
+      <option name="closed" value="true" />
+      <created>1752604426602</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1752604426602</updated>
+    </task>
+    <task id="LOCAL-00005" summary="resolved build issues">
+      <option name="closed" value="true" />
+      <created>1752604436151</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1752604436151</updated>
+    </task>
+    <task id="LOCAL-00006" summary="resolved build issues">
+      <option name="closed" value="true" />
+      <created>1752604913387</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1752604913387</updated>
+    </task>
+    <task id="LOCAL-00007" summary="resolved build issues">
+      <option name="closed" value="true" />
+      <created>1752606859910</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1752606859910</updated>
+    </task>
+    <task id="LOCAL-00008" summary="resolved build issues">
+      <option name="closed" value="true" />
+      <created>1752607440539</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1752607440539</updated>
+    </task>
+    <task id="LOCAL-00009" summary="production adjustments">
+      <option name="closed" value="true" />
+      <created>1752608488761</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1752608488761</updated>
+    </task>
+    <task id="LOCAL-00010" summary="production adjustments">
+      <option name="closed" value="true" />
+      <created>1752627867344</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1752627867344</updated>
+    </task>
+    <task id="LOCAL-00011" summary="added webhook for auto deploys">
+      <option name="closed" value="true" />
+      <created>1752629467241</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1752629467241</updated>
+    </task>
+    <task id="LOCAL-00012" summary="added webhook for auto deploys">
+      <option name="closed" value="true" />
+      <created>1752631633670</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1752631633670</updated>
+    </task>
+    <task id="LOCAL-00013" summary="test">
+      <option name="closed" value="true" />
+      <created>1752633200766</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1752633200766</updated>
+    </task>
+    <task id="LOCAL-00014" summary="testing again">
+      <option name="closed" value="true" />
+      <created>1752633788545</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1752633788545</updated>
+    </task>
+    <task id="LOCAL-00015" summary="updated webhook route">
+      <option name="closed" value="true" />
+      <created>1752633963017</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1752633963017</updated>
+    </task>
+    <task id="LOCAL-00016" summary="updated webhook route">
+      <option name="closed" value="true" />
+      <created>1752634161004</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1752634161004</updated>
+    </task>
+    <task id="LOCAL-00017" summary="updated webhook route">
+      <option name="closed" value="true" />
+      <created>1752634506007</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1752634506008</updated>
+    </task>
+    <task id="LOCAL-00018" summary="add landing page with custom effects">
+      <option name="closed" value="true" />
+      <created>1752734055792</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1752734055792</updated>
+    </task>
+    <task id="LOCAL-00019" summary="json update">
+      <option name="closed" value="true" />
+      <created>1752735091606</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1752735091606</updated>
+    </task>
+    <task id="LOCAL-00020" summary="new json add">
+      <option name="closed" value="true" />
+      <created>1752770151238</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1752770151238</updated>
+    </task>
+    <task id="LOCAL-00021" summary="mobile fix">
+      <option name="closed" value="true" />
+      <created>1752771957425</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1752771957425</updated>
+    </task>
+    <task id="LOCAL-00022" summary="stripe and supabase integration">
+      <option name="closed" value="true" />
+      <created>1753131312677</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1753131312677</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="296f6f1e-e72c-4f2a-9dfb-ac1edef63460" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="296f6f1e-e72c-4f2a-9dfb-ac1edef63460">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="backend updates" />
+    <MESSAGE value="resolved build issues" />
+    <MESSAGE value="production adjustments" />
+    <MESSAGE value="added webhook for auto deploys" />
+    <MESSAGE value="test" />
+    <MESSAGE value="testing again" />
+    <MESSAGE value="updated webhook route" />
+    <MESSAGE value="add landing page with custom effects" />
+    <MESSAGE value="json update" />
+    <MESSAGE value="mobile fix" />
+    <MESSAGE value="stripe and supabase integration" />
+    <option name="LAST_COMMIT_MESSAGE" value="stripe and supabase integration" />
+  </component>
+</project>
