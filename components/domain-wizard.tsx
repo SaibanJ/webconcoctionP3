@@ -124,7 +124,7 @@ export function DomainWizard() {
                 const pricingResponse = await fetch('/api/stripe/payment-intent', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ domain: r.$.Domain, years: 1, calculatePrice: true }),
+                    body: JSON.stringify({ domain: r.$.Domain, years: 1, calculatePrice: true, domainAction: mode }),
                 });
                 const pricingData = await pricingResponse.json();
                 if (pricingResponse.ok) {
@@ -161,25 +161,9 @@ export function DomainWizard() {
     setIsLoading(true)
     setError("")
 
-    try {
-      const response = await fetch("/api/stripe/payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          domain: selectedDomain.domain,
-          years: values.years,
-        }),
-      })
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error || "Failed to create payment intent.")
-
-      setClientSecret(data.clientSecret)
-      setStep("PAYMENT")
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.")
-    } finally {
-      setIsLoading(false)
-    }
+    // Transition to HOSTING step
+    setStep("HOSTING")
+    setIsLoading(false)
   }
 
   const onTransferSubmit = async (values: z.infer<typeof TransferSchema>) => {
@@ -187,25 +171,9 @@ export function DomainWizard() {
     setIsLoading(true)
     setError("")
 
-    try {
-        const response = await fetch("/api/stripe/payment-intent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              domain: selectedDomain.domain,
-              years: values.years,
-            }),
-          })
-          const data = await response.json()
-          if (!response.ok) throw new Error(data.error || "Failed to create payment intent.")
-
-          setClientSecret(data.clientSecret)
-          setStep("PAYMENT")
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.")
-    } finally {
-      setIsLoading(false)
-    }
+    // Transition to HOSTING step
+    setStep("HOSTING")
+    setIsLoading(false)
   }
 
   const onCreateHostingSubmit = async (values: z.infer<typeof HostingSchema>) => {
@@ -214,26 +182,36 @@ export function DomainWizard() {
     setError("")
 
     try {
-      const response = await fetch("/api/whm/create", {
+      // Placeholder userId - replace with actual user ID from authentication
+      const userId = "user_placeholder_id"; 
+
+      const payload: any = {
+        domain: selectedDomain.domain,
+        years: mode === "REGISTER" ? registrationForm.getValues("years") : transferForm.getValues("years"),
+        userId: userId,
+        hostingPlan: values.plan,
+        domainAction: mode,
+      };
+
+      if (mode === "TRANSFER") {
+        payload.eppCode = transferForm.getValues("epp");
+      }
+
+      const response = await fetch("/api/stripe/payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          domain: selectedDomain.domain,
-          username: values.hostingUsername,
-          password: values.hostingPassword,
-          plan: values.plan,
-          contactemail: registrationForm.getValues("registrantInfo.emailAddress"),
-        }),
-      })
-      const data = await response.json()
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create hosting account.")
+        throw new Error(data.error || "Failed to create payment intent.");
       }
-      setStep("COMPLETE")
+      setClientSecret(data.clientSecret);
+      setStep("PAYMENT");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.")
+      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 

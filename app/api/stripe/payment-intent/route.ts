@@ -10,10 +10,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: Request) {
   try {
-    const { domain, years, userId, hostingPlan, domainAction } = await request.json();
+    const { domain, years, userId, hostingPlan, domainAction, calculatePrice, eppCode } = await request.json();
 
-    if (!domain || !years || !userId || !hostingPlan || !domainAction) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!domain || !years) {
+      return NextResponse.json({ error: "Domain and years are required" }, { status: 400 });
     }
 
     const tld = domain.split(".").pop();
@@ -21,10 +21,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid domain" }, { status: 400 });
     }
 
-    // Assuming getPricing can handle both REGISTER and TRANSFER for domain pricing
-    const pricing = await getPricing("DOMAIN", domainAction, tld);
+    // Determine action for pricing based on domainAction or default to REGISTER
+    const pricingAction = domainAction || "REGISTER";
+
+    const pricing = await getPricing("DOMAIN", pricingAction, tld);
     const price = parseFloat(pricing.Product[0].Price[0].$.Price) * years;
     const priceInCents = Math.round(price * 100);
+
+    if (calculatePrice) {
+      return NextResponse.json({ price: priceInCents });
+    }
+
+    // If not calculating price, then userId, hostingPlan, and domainAction are required
+    if (!userId || !hostingPlan || !domainAction) {
+      return NextResponse.json({ error: "Missing required fields for order creation" }, { status: 400 });
+    }
 
     // Create an Order record in the database with PENDING status
     const order = await prisma.order.create({
@@ -36,6 +47,7 @@ export async function POST(request: Request) {
         domainName: domain,
         years,
         totalPrice: price,
+        eppCode: eppCode || null, // Include eppCode if provided
       },
     });
 
