@@ -10,7 +10,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: Request) {
   try {
-    const { domain, years, userId, hostingPlan, domainAction, calculatePrice, eppCode, initialPlan } = await request.json();
+    const { domain, years, userId, hostingPlan, domainAction, calculatePrice, eppCode, initialPlan, registrantInfo, hostingUsername, hostingPassword } = await request.json();
+    console.log("Incoming payment-intent request body:", { domain, years, userId, hostingPlan, domainAction, calculatePrice, eppCode, initialPlan, registrantInfo, hostingUsername, hostingPassword });
 
     if (!domain || !years) {
       return NextResponse.json({ error: "Domain and years are required" }, { status: 400 });

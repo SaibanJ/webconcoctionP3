@@ -141,6 +141,7 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
                     body: JSON.stringify({ domain: r.$.Domain, years: 1, calculatePrice: true, domainAction: mode }),
                 });
                 const pricingData = await pricingResponse.json();
+                console.log(`Pricing data for ${r.$.Domain}:`, pricingData); // Debugging line
                 if (pricingResponse.ok) {
                     price = (pricingData.price / 100).toFixed(2);
                 }
@@ -217,7 +218,7 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
         hostingPlan: values.plan,
         domainAction: mode,
         initialPlan: initialPlan, // Add initialPlan to the payload
-        registrantInfo: mode === "REGISTER" ? registrationForm.getValues("registrantInfo") : transferForm.getValues("registrantInfo"),
+        registrantInfo: registrantInfo,
         hostingUsername: values.hostingUsername,
         hostingPassword: values.hostingPassword,
       };
@@ -225,6 +226,8 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
       if (mode === "TRANSFER") {
         payload.eppCode = transferForm.getValues("epp");
       }
+
+      console.log("Payload sent to Stripe payment-intent:", payload); // Debugging line
 
       const response = await fetch("/api/stripe/payment-intent", {
         method: "POST",
@@ -921,9 +924,16 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
                         <FormItem key={plan.id}>
                           <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
                             <FormControl>
-                              <RadioGroupItem value={plan.id} className="sr-only" />
+                              <RadioGroupItem
+                                value={plan.id}
+                                className="sr-only"
+                                disabled={plan.id !== initialPlan.id} // Disable if not the initial plan
+                              />
                             </FormControl>
-                            <div className="items-center rounded-md border-2 border-muted p-4 hover:border-accent transition-colors">
+                            <div className={cn(
+                                "items-center rounded-md border-2 border-muted p-4 hover:border-accent transition-colors",
+                                plan.id !== initialPlan.id && "opacity-50 cursor-not-allowed" // Grey out if not the initial plan
+                            )}>
                               <h4 className="font-semibold mb-1">{plan.name}</h4>
                               <p className="text-sm text-muted-foreground">{plan.description}</p>
                             </div>
