@@ -79,7 +79,7 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
 
   useEffect(() => {
     if (isOpen && initialPlan) {
-      hostingForm.setValue("plan", initialPlan.name);
+      hostingForm.setValue("plan", initialPlan.id);
     }
   }, [isOpen, initialPlan]);
 
@@ -928,13 +928,13 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
                               <RadioGroupItem
                                 value={plan.id}
                                 className="sr-only"
-                                disabled={plan.id !== initialPlan.name} // Disable if not the initial plan
+                                disabled={plan.id !== initialPlan.id} // Disable if not the initial plan
                               />
                             </FormControl>
                             <div className={cn(
                                 "items-center rounded-md border-2 border-gray-300 p-4 hover:border-accent transition-colors",
-                                plan.id !== initialPlan.name && "opacity-50 cursor-not-allowed", // Grey out if not the initial plan
-                                plan.id === initialPlan.name && "border-white" // Highlight with white border if it's the initial plan
+                                plan.id !== initialPlan.id && "opacity-50 cursor-not-allowed", // Grey out if not the initial plan
+                                plan.id === initialPlan.id && "border-white" // Highlight with white border if it's the initial plan
                             )}>
                               <h4 className="font-semibold mb-1">{plan.name}</h4>
                               <p className="text-sm text-muted-foreground">{plan.description}</p>
