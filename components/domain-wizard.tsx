@@ -212,6 +212,8 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
       }
       const userId = userData.userId;
 
+      console.log("Registrant Info sent to /api/user/create:", registrantInfo); // Debugging line
+
       const payload: any = {
         domain: selectedDomain.domain,
         years: mode === "REGISTER" ? registrationForm.getValues("years") : transferForm.getValues("years"),
