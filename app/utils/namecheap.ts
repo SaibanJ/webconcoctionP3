@@ -23,6 +23,14 @@ export async function makeNamecheapApiRequest(command: string, params: Record<st
   const userName = process.env.NAMECHEAP_USERNAME;
   const isSandbox = process.env.NAMECHEAP_SANDBOX === "true";
 
+  console.log("Namecheap API Env Vars:", {
+    apiUser: apiUser ? "SET" : "NOT SET",
+    apiKey: apiKey ? "SET" : "NOT SET",
+    clientIp: clientIp ? "SET" : "NOT SET",
+    userName: userName ? "SET" : "NOT SET",
+    isSandbox: isSandbox,
+  });
+
   // Get the appropriate API URL based on the environment
   const apiUrl = isSandbox ? SANDBOX_API_URL : PRODUCTION_API_URL;
 

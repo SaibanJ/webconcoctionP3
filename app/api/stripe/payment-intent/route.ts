@@ -24,8 +24,9 @@ export async function POST(request: Request) {
 
     // Determine action for pricing based on domainAction or default to REGISTER
     const pricingAction = domainAction || "REGISTER";
-
+    console.log("Calling getPricing with:", { productType: "DOMAIN", pricingAction, productName: tld });
     const pricing = await getPricing("DOMAIN", pricingAction, tld);
+    console.log("Pricing data from Namecheap API:", pricing); // Debugging line
     const price = parseFloat(pricing.Product[0].Price[0].$.Price) * years;
     const priceInCents = Math.round(price * 100);
 

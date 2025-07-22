@@ -22,6 +22,7 @@ export function LandingPage() {
 
   const pricingPackages = [
     {
+      id: "webcrtae_basic",
       name: "Starter",
       monthlyPrice: 29,
       yearlyPrice: 290,
@@ -29,6 +30,7 @@ export function LandingPage() {
       popular: false,
     },
     {
+      id: "webcrtae_pro",
       name: "Pro",
       monthlyPrice: 59,
       yearlyPrice: 590,
@@ -42,6 +44,7 @@ export function LandingPage() {
       popular: true,
     },
     {
+      id: "webcrtae_elite",
       name: "Business",
       monthlyPrice: 99,
       yearlyPrice: 990,
