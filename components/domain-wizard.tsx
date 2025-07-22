@@ -922,7 +922,7 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
                     >
                       {hostingPlans.map((plan) => (
                         <FormItem key={plan.id}>
-                          <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
+                          <FormLabel className="cursor-pointer">
                             <FormControl>
                               <RadioGroupItem
                                 value={plan.id}
@@ -931,8 +931,9 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
                               />
                             </FormControl>
                             <div className={cn(
-                                "items-center rounded-md border-2 border-muted p-4 hover:border-accent transition-colors",
-                                plan.id !== initialPlan.id && "opacity-50 cursor-not-allowed" // Grey out if not the initial plan
+                                "items-center rounded-md border-2 border-gray-300 p-4 hover:border-accent transition-colors",
+                                plan.id !== initialPlan.id && "opacity-50 cursor-not-allowed", // Grey out if not the initial plan
+                                plan.id === initialPlan.id && "border-white" // Highlight with white border if it's the initial plan
                             )}>
                               <h4 className="font-semibold mb-1">{plan.name}</h4>
                               <p className="text-sm text-muted-foreground">{plan.description}</p>
