@@ -212,6 +212,18 @@ export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps
       }
       const userId = userData.userId;
 
+      console.log("Debug onCreateHostingSubmit values:", {
+        selectedDomain: selectedDomain,
+        years: mode === "REGISTER" ? registrationForm.getValues("years") : transferForm.getValues("years"),
+        userId: userId,
+        hostingPlan: values.plan,
+        domainAction: mode,
+        initialPlan: initialPlan,
+        registrantInfo: registrantInfo,
+        hostingUsername: values.hostingUsername,
+        hostingPassword: values.hostingPassword,
+      });
+
       const payload: any = {
         domain: selectedDomain.domain,
         years: mode === "REGISTER" ? registrationForm.getValues("years") : transferForm.getValues("years"),
