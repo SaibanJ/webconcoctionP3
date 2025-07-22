@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { z } from "zod"
@@ -58,7 +58,15 @@ const hostingPlans = [
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-export function DomainWizard() {
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+interface DomainWizardProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialPlan: any; // TODO: Define a proper type for initialPlan
+}
+
+export function DomainWizard({ isOpen, onClose, initialPlan }: DomainWizardProps) {
   const [step, setStep] = useState<Step>("SEARCH")
   const [mode, setMode] = useState<DomainMode>("REGISTER")
   const [searchTerm, setSearchTerm] = useState("")
@@ -67,6 +75,12 @@ export function DomainWizard() {
   const [error, setError] = useState("")
   const [selectedDomain, setSelectedDomain] = useState<DomainResult | null>(null)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (isOpen && initialPlan) {
+      hostingForm.setValue("plan", initialPlan.id);
+    }
+  }, [isOpen, initialPlan]);
 
   const searchForm = useForm<z.infer<typeof SearchSchema>>({
     resolver: zodResolver(SearchSchema),
@@ -182,8 +196,19 @@ export function DomainWizard() {
     setError("")
 
     try {
-      // Placeholder userId - replace with actual user ID from authentication
-      const userId = "user_placeholder_id"; 
+      const registrantInfo = mode === "REGISTER" ? registrationForm.getValues("registrantInfo") : transferForm.getValues("registrantInfo");
+
+      // Create or get user ID
+      const userResponse = await fetch("/api/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registrantInfo),
+      });
+      const userData = await userResponse.json();
+      if (!userResponse.ok) {
+        throw new Error(userData.error || "Failed to create/get user.");
+      }
+      const userId = userData.userId;
 
       const payload: any = {
         domain: selectedDomain.domain,
@@ -191,6 +216,10 @@ export function DomainWizard() {
         userId: userId,
         hostingPlan: values.plan,
         domainAction: mode,
+        initialPlan: initialPlan, // Add initialPlan to the payload
+        registrantInfo: mode === "REGISTER" ? registrationForm.getValues("registrantInfo") : transferForm.getValues("registrantInfo"),
+        hostingUsername: values.hostingUsername,
+        hostingPassword: values.hostingPassword,
       };
 
       if (mode === "TRANSFER") {
@@ -227,6 +256,7 @@ export function DomainWizard() {
     registrationForm.reset()
     transferForm.reset()
     hostingForm.reset()
+    onClose();
   }
 
   const generatePassword = () => {
@@ -1034,9 +1064,16 @@ export function DomainWizard() {
   }
 
   return (
-    <div className="w-full max-w-2xl">
-      {renderStep()}
-      {renderError()}
-    </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-0">
+          <DialogTitle>Domain and Hosting Setup</DialogTitle>
+        </DialogHeader>
+        <div className="p-6 pt-0">
+          {renderStep()}
+          {renderError()}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

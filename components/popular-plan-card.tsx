@@ -11,10 +11,11 @@ interface PopularPlanCardProps {
     yearlyPrice: number
     features: string[]
   }
-  isYearly: boolean
+  isYearly: boolean;
+  onSelectPlan: (plan: any) => void; // Add this line
 }
 
-export function PopularPlanCard({ pkg, isYearly }: PopularPlanCardProps) {
+export function PopularPlanCard({ pkg, isYearly, onSelectPlan }: PopularPlanCardProps) {
   return (
     <div className="relative scale-105 shadow-lg shadow-purple-500/20 rounded-xl">
       <style jsx>{`
@@ -75,7 +76,7 @@ export function PopularPlanCard({ pkg, isYearly }: PopularPlanCardProps) {
           </ul>
         </CardContent>
         <CardFooter>
-          <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">Choose Plan</Button>
+          <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white" onClick={() => onSelectPlan(pkg)}>Choose Plan</Button>
         </CardFooter>
       </Card>
     </div>

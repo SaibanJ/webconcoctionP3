@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
@@ -17,6 +17,8 @@ import { MobileNav } from "@/components/mobile-nav";
 export function LandingPage() {
   const [isYearly, setIsYearly] = useState(false)
   const { theme } = useTheme()
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isDomainWizardOpen, setIsDomainWizardOpen] = useState(false);
 
   const pricingPackages = [
     {
@@ -53,6 +55,11 @@ export function LandingPage() {
       popular: false,
     },
   ]
+
+  const handlePlanSelect = useCallback((plan) => {
+    setSelectedPlan(plan);
+    setIsDomainWizardOpen(true);
+  }, []);
 
   return (
       <div className="flex flex-col min-h-[100dvh] bg-white dark:bg-[#0a0a0a] text-gray-800 dark:text-gray-200 font-sans">
@@ -244,7 +251,7 @@ export function LandingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                 {pricingPackages.map((pkg) =>
                     pkg.popular ? (
-                        <PopularPlanCard key={pkg.name} pkg={pkg} isYearly={isYearly} />
+                        <PopularPlanCard key={pkg.name} pkg={pkg} isYearly={isYearly} onSelectPlan={handlePlanSelect} />
                     ) : (
                         <Card
                             key={pkg.name}
@@ -273,7 +280,10 @@ export function LandingPage() {
                             </ul>
                           </CardContent>
                           <CardFooter>
-                            <Button className="w-full bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white">
+                            <Button
+                                className="w-full bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white"
+                                onClick={() => handlePlanSelect(pkg)}
+                            >
                               Choose Plan
                             </Button>
                           </CardFooter>
@@ -343,7 +353,7 @@ export function LandingPage() {
               className="w-full py-20 md:py-32 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <DomainWizard />
+                <DomainWizard isOpen={isDomainWizardOpen} onClose={() => setIsDomainWizardOpen(false)} initialPlan={selectedPlan} />
             </div>
           </section>
         </main>
