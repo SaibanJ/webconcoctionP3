@@ -106,7 +106,7 @@ export function LandingPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
-                  Craft Your Digital Masterpiece
+                  Craft Your Digital Masterpiece...
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-600 dark:text-gray-300 md:text-xl">
                   WebConcoction provides the tools, speed, and reliability to bring your web projects to life. From idea
