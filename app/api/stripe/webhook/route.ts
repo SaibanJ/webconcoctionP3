@@ -121,6 +121,7 @@ export async function POST(request: Request) {
                 username: hostingUsername,
                 password: hostingPassword,
                 plan: hostingPlanId,
+                contactemail: registrantInfo.emailAddress, // Add contactemail
               }),
             });
             const whmData = await whmResponse.json();

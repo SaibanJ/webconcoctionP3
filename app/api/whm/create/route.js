@@ -3,9 +3,9 @@ import axios from "axios";
 
 export async function POST(request) {
   try {
-    const { domain, username, password, plan } = await request.json();
+    const { domain, username, password, plan, contactemail } = await request.json();
 
-    if (!domain || !username || !password || !plan) {
+    if (!domain || !username || !password || !plan || !contactemail) {
       return NextResponse.json({ error: "Missing required cPanel account details" }, { status: 400 });
     }
 
@@ -18,7 +18,7 @@ export async function POST(request) {
     }
 
     const authHeader = `whm ${whmUsername}:${whmAccessHash}`;
-    const url = `https://${whmHost}:2087/json-api/createacct?api.version=1&username=${username}&domain=${domain}&password=${password}&plan=${plan}`;
+    const url = `https://${whmHost}:2087/json-api/createacct?api.version=1&username=${username}&domain=${domain}&password=${password}&plan=${plan}&contactemail=${contactemail}`;
 
     const response = await axios.get(url, {
       headers: {
