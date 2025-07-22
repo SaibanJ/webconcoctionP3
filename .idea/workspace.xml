@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="fixed build error">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="6dce7d8e-bdc1-4ef3-8fe5-376a19f536c6" name="Changes" comment="test landing">
+      <change beforePath="$PROJECT_DIR$/app/api/user/profile/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/user/profile/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/domain-wizard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/domain-wizard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/landing-page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/landing-page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/popular-plan-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/popular-plan-card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -323,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753139110964</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="test landing">
+      <option name="closed" value="true" />
+      <created>1753146127176</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1753146127176</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -364,6 +375,7 @@
     <MESSAGE value="stripe and supabase integration" />
     <MESSAGE value="TEst" />
     <MESSAGE value="fixed build error" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed build error" />
+    <MESSAGE value="test landing" />
+    <option name="LAST_COMMIT_MESSAGE" value="test landing" />
   </component>
 </project>

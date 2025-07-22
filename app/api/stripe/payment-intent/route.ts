@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: Request) {
   try {
-    const { domain, years, userId, hostingPlan, domainAction, calculatePrice, eppCode } = await request.json();
+    const { domain, years, userId, hostingPlan, domainAction, calculatePrice, eppCode, initialPlan } = await request.json();
 
     if (!domain || !years) {
       return NextResponse.json({ error: "Domain and years are required" }, { status: 400 });
@@ -60,7 +60,10 @@ export async function POST(request: Request) {
         years,
         hostingPlan,
         domainAction,
-        userId,
+        initialPlan: JSON.stringify(initialPlan), // Store initialPlan as a string
+        registrantInfo: JSON.stringify(registrantInfo), // Store registrantInfo as a string
+        hostingUsername: hostingUsername, // Store hostingUsername
+        hostingPassword: hostingPassword, // Store hostingPassword
       },
     });
 

@@ -45,32 +45,50 @@ export async function POST(request: Request) {
         });
 
         // Use the updated order data for domain registration
-        const { domainName, years, domainAction, eppCode, userId } = updatedOrder;
+        const { domainName, years, domainAction, eppCode } = updatedOrder;
+        const registrantInfo: ContactInfo = JSON.parse(paymentIntent.metadata.registrantInfo);
+        const initialPlan = JSON.parse(paymentIntent.metadata.initialPlan);
 
-        // Retrieve the user's contact information from the database
-        const user = await prisma.user.findUnique({
-          where: { id: userId },
+        // Create or update user in Supabase (via Prisma)
+        const user = await prisma.user.upsert({
+          where: { email: registrantInfo.emailAddress },
+          update: {
+            firstName: registrantInfo.firstName,
+            lastName: registrantInfo.lastName,
+            address1: registrantInfo.address1,
+            address2: registrantInfo.address2 || null,
+            city: registrantInfo.city,
+            stateProvince: registrantInfo.stateProvince,
+            postalCode: registrantInfo.postalCode,
+            country: registrantInfo.country,
+            phone: registrantInfo.phone,
+            // Add other fields as necessary
+          },
+          create: {
+            email: registrantInfo.emailAddress,
+            firstName: registrantInfo.firstName,
+            lastName: registrantInfo.lastName,
+            address1: registrantInfo.address1,
+            address2: registrantInfo.address2 || null,
+            city: registrantInfo.city,
+            stateProvince: registrantInfo.stateProvince,
+            postalCode: registrantInfo.postalCode,
+            country: registrantInfo.country,
+            phone: registrantInfo.phone,
+            name: `${registrantInfo.firstName} ${registrantInfo.lastName}`,
+            // Add other fields as necessary
+          },
         });
 
-        if (!user || !user.firstName || !user.lastName || !user.address1 || !user.city || !user.stateProvince || !user.postalCode || !user.country || !user.phone || !user.email) {
-          console.error(`Missing user contact information for userId: ${userId}`);
-          return NextResponse.json({ error: "Missing user contact information" }, { status: 500 });
-        }
-
-        const registrantInfo: ContactInfo = {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          address1: user.address1,
-          address2: user.address2 || undefined,
-          city: user.city,
-          stateProvince: user.stateProvince,
-          postalCode: user.postalCode,
-          country: user.country,
-          phone: user.phone,
-          emailAddress: user.email,
-          organizationName: undefined, // Assuming no organization for now
-          jobTitle: undefined, // Assuming no job title for now
-        };
+        // Update the order with the actual userId and initialPlan details
+        await prisma.order.update({
+          where: { id: orderId },
+          data: {
+            userId: user.id,
+            hostingPlan: initialPlan.name, // Assuming initialPlan has a 'name' field
+            totalPrice: paymentIntent.amount / 100, // Use the actual amount from payment intent
+          },
+        });
 
         if (domainAction === "REGISTER") {
           await registerDomain(domainName, years, registrantInfo);
@@ -85,6 +103,39 @@ export async function POST(request: Request) {
         } else {
           console.error(`Unknown domain action: ${domainAction} for order ${orderId}`);
           return NextResponse.json({ error: "Unknown domain action" }, { status: 400 });
+        }
+
+        // Create cPanel account
+        const hostingUsername = paymentIntent.metadata.hostingUsername;
+        const hostingPassword = paymentIntent.metadata.hostingPassword;
+        const hostingPlanId = initialPlan.id; // Use the ID from the initialPlan object
+
+        if (hostingUsername && hostingPassword && hostingPlanId) {
+          try {
+            const whmResponse = await fetch(`${request.nextUrl.origin}/api/whm/create`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                domain: domainName,
+                username: hostingUsername,
+                password: hostingPassword,
+                plan: hostingPlanId,
+              }),
+            });
+            const whmData = await whmResponse.json();
+
+            if (!whmResponse.ok || !whmData.success) {
+              console.error(`Failed to create cPanel account for ${domainName}:`, whmData.error);
+              // TODO: Handle this failure (e.g., notify admin, refund user)
+            } else {
+              console.log(`Successfully created cPanel account for ${domainName}`);
+            }
+          } catch (whmError) {
+            console.error(`Error calling WHM API for ${domainName}:`, whmError);
+            // TODO: Handle this error
+          }
+        } else {
+          console.warn(`Skipping cPanel account creation for ${domainName}: Missing username, password, or plan.`);
         }
 
       } catch (error) {
