@@ -51,9 +51,9 @@ const countries = [
 ]
 
 const hostingPlans = [
-  { id: "webcrtae_basic", name: "Basic", description: "Perfect for getting started." },
-  { id: "webcrtae_pro", name: "Pro", description: "For growing businesses." },
-  { id: "webcrtae_elite", name: "Elite", description: "For power users & agencies." },
+  { id: "Starter", name: "Starter", description: "Perfect for getting started." },
+  { id: "Pro", name: "Pro", description: "For growing businesses." },
+  { id: "Business", name: "Business", description: "For power users & agencies." },
 ]
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
